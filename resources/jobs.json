@@ -1,0 +1,42 @@
+{
+  "1": {
+    "company" : "Tesla",
+    "position": "Backend Position",
+    "location": "Palo Alto, California",
+    "salary": 50,
+    "link": "https://www.tesla.com/careers/search/job/vehicle-firmware-embedded-systems-engineering-internship-fall-2023-168106?",
+    "visa": "Yes",
+    "open": "true",
+    "category": "fall_2023"
+  },
+  "2": {
+    "company" : "Hubspot",
+    "position": "Backend Position",
+    "location": "Remote",
+    "salary": 55,
+    "link": "https://www.hubspot.com/careers/jobs/3643175?hubs_signup-cta=careers-apply",
+    "visa": "Yes",
+    "open": "true",
+    "category": "fall_2023"
+  },
+  "3": {
+    "company" : "Hubspot",
+    "position": "Backend Position",
+    "location": "Remote",
+    "salary": 55,
+    "link": "https://www.hubspot.com/careers/jobs/3643175?hubs_signup-cta=careers-apply",
+    "visa": "Yes",
+    "open": "true",
+    "category": "fall_2023"
+  },
+  "4": {
+    "company" : "Hubspot",
+    "position": "Backend Position",
+    "location": "Remote",
+    "salary": 55,
+    "link": "https://www.hubspot.com/careers/jobs/3643175?hubs_signup-cta=careers-apply",
+    "visa": "Yes",
+    "open": "true",
+    "category": "fall_2023"
+  }
+}
