@@ -4,61 +4,71 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gocolly/colly"
-	"io/ioutil"
-	"log"
-	"strconv"
+	"net"
+	"net/http"
+	"os"
+	"time"
 )
 
 type Job struct {
-	Company           string `json:"companyName"`
-	JobRole           string `json:"jobRole"`
-	Location          string `json:"location"`
-	Link              string `json:"link"`
-	ApplicationPeriod bool   `json:"open"`
+	Company  string `json:"companyName"`
+	JobRole  string `json:"jobRole"`
+	Location string `json:"location"`
+	Link     string `json:"link"`
+	Status   string `json:"status"`
 }
 
 func main() {
-	allFacts := make([]Job, 0)
 
-	collector := colly.NewCollector(
-		colly.AllowedDomains("Fall2023", "https://github.com/bsovs/Fall2023-Internships"),
-	)
+	c := colly.NewCollector()
 
-	collector.OnHTML(".markdown-body entry-content container-lg tr", func(element *colly.HTMLElement) {
-		factId, err := strconv.Atoi(element.Attr("td"))
-		if err != nil {
-			log.Println("Could not get id")
-		}
-		factDesc := element.Text
+	c.WithTransport(&http.Transport{
+		DialContext: (&net.Dialer{
+			Timeout:   90 * time.Second,
+			KeepAlive: 60 * time.Second,
+			DualStack: true,
+		}).DialContext,
+		MaxIdleConns:          100,
+		IdleConnTimeout:       90 * time.Second,
+		TLSHandshakeTimeout:   10 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+	})
 
-		fmt.Println(factId)
-		fmt.Println(factDesc)
-		/*
-			fact := Fact{
-				ID:          factId,
-				Description: factDesc,
+	var jobData []Job
+
+	c.OnRequest(func(r *colly.Request) {
+		fmt.Println("Scraping:", r.URL)
+	})
+
+	c.OnResponse(func(r *colly.Response) {
+		fmt.Println("Status:", r.StatusCode)
+	})
+	c.OnHTML("table > tbody", func(h *colly.HTMLElement) {
+		h.ForEach("tr", func(_ int, el *colly.HTMLElement) {
+			tableData := Job{
+				Company:  el.ChildText("td:nth-child(1)"),
+				Location: el.ChildText("td:nth-child(2)"),
+				Status:   el.ChildText("td:nth-child(3)"),
+				JobRole:  el.ChildText("td:nth-child(4)"),
+				Link:     el.ChildText("td:nth-child(1):link"),
 			}
-
-			allFacts = append(allFacts, fact)
-
-		*/
+			fmt.Println(el.ChildText("td:nth-child(1):link"))
+			jobData = append(jobData, tableData)
+		})
 	})
 
-	collector.OnRequest(func(request *colly.Request) {
-		fmt.Println("Visiting", request.URL.String())
+	c.OnError(func(r *colly.Response, err error) {
+		fmt.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
 	})
 
-	collector.Visit("https://github.com/bsovs/Fall2023-Internships")
+	//ignored error fix later
+	_ = c.Visit("https://github.com/bsovs/Fall2023-Internships/blob/main/Fall2022/README.md")
 
-	writeJSON(allFacts)
-}
-
-func writeJSON(data []Job) {
-	file, err := json.MarshalIndent(data, "", " ")
+	content, err := json.Marshal(jobData)
 	if err != nil {
-		log.Println("Unable to create json file")
-		return
+		fmt.Println(err.Error())
 	}
+	os.WriteFile("githubsJobs.json", content, 0644)
+	fmt.Println("Total jobs: ", len(jobData))
 
-	_ = ioutil.WriteFile("jobs.json", file, 0644)
 }
