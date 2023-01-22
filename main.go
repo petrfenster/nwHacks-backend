@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -12,18 +13,21 @@ import (
 )
 
 type Job struct {
-	Company  string `json: "company"`
-	Position string `json: "position"`
-	Location string `json: "location"`
-	Salary   int    `json: "salary"`
-	Link     string `json: "link"`
-	Visa     string `json: "visa"`
-	Open     bool   `json: "open"`
+	Company  string      `json: "company"`
+	Position string      `json: "position"`
+	Location string      `json: "location"`
+	Salary   int         `json: "salary"`
+	Link     string      `json: "link"`
+	Visa     bool        `json: "visa"`
+	Open     bool        `json: "open"`
+	LeetCode [][2]string `json: "leetcode"`
 }
 
 type UserData struct {
+	Name     string `json:"name"`
 	Password string `json:"password"`
 	Applied  []int  `json:"applied"`
+	Saved    []int  `json:"saved"`
 }
 
 type Jobs map[string]Job
@@ -31,32 +35,170 @@ type Jobs map[string]Job
 type Users map[string]UserData
 
 func fetch(w http.ResponseWriter, req *http.Request) {
-
-	os.Chdir("resources")
-	jsonFile, err := os.Open("jobs.json")
-
+	jsonFile, err := os.Open("resources/jobs.json")
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	defer jsonFile.Close()
-
 	byteValue, _ := ioutil.ReadAll(jsonFile)
-
 	w.Write(byteValue)
-
 }
 
 func addUser(w http.ResponseWriter, req *http.Request) {
+	userName := req.FormValue("username")
+	password := req.FormValue("password")
+	name := req.FormValue("name")
 
+	jsonFile, err := os.Open("resources/users.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var users Users
+
+	json.Unmarshal(byteValue, &users)
+
+	userData := UserData{}
+	userData.Name = name
+	userData.Password = password
+	users[userName] = userData
+
+	file, _ := json.MarshalIndent(users, "", "  ")
+	_ = ioutil.WriteFile("resources/users.json", file, 0644)
+
+	w.Write([]byte("User " + userName + " has been succesfully added"))
 }
 
 func login(w http.ResponseWriter, req *http.Request) {
+	userName := req.FormValue("username")
+	password := req.FormValue("password")
 
+	jsonFile, err := os.Open("resources/users.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+	var users Users
+	json.Unmarshal(byteValue, &users)
+
+	if users[userName].Password == password {
+		w.Write([]byte("Login Successful"))
+	} else {
+		w.Write([]byte("Login Failed"))
+	}
 }
 
 func apply(w http.ResponseWriter, req *http.Request) {
+	userName := req.FormValue("username")
+	jobId, _ := strconv.Atoi(req.FormValue("jobid"))
 
+	jsonFile, err := os.Open("resources/users.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+	var users Users
+	json.Unmarshal(byteValue, &users)
+
+	user := users[userName]
+	user.Applied = append(users[userName].Applied, jobId)
+	users[userName] = user
+
+	file, _ := json.MarshalIndent(users, "", "  ")
+	_ = ioutil.WriteFile("resources/users.json", file, 0644)
+
+	w.Write([]byte("Successfuly marked the job as applied"))
+}
+
+func getApplied(w http.ResponseWriter, req *http.Request) {
+	userName := req.FormValue("username")
+
+	jsonFile, err := os.Open("resources/users.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+	var users Users
+	json.Unmarshal(byteValue, &users)
+
+	jsonFile, err = os.Open("resources/jobs.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
+	byteValue, _ = ioutil.ReadAll(jsonFile)
+	var jobs Jobs
+	json.Unmarshal(byteValue, &jobs)
+
+	appliedIds := users[userName].Applied
+	appliedJobs := []Job{}
+
+	for _, id := range appliedIds {
+		appliedJobs = append(appliedJobs, jobs[strconv.FormatInt(int64(id), 10)])
+	}
+
+	file, _ := json.MarshalIndent(appliedJobs, "", "  ")
+	w.Write(file)
+}
+
+func getSaved(w http.ResponseWriter, req *http.Request) {
+	userName := req.FormValue("username")
+
+	jsonFile, err := os.Open("resources/users.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+	var users Users
+	json.Unmarshal(byteValue, &users)
+
+	jsonFile, err = os.Open("resources/jobs.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
+	byteValue, _ = ioutil.ReadAll(jsonFile)
+	var jobs Jobs
+	json.Unmarshal(byteValue, &jobs)
+
+	savedIds := users[userName].Saved
+	savedJobs := []Job{}
+
+	for _, id := range savedIds {
+		savedJobs = append(savedJobs, jobs[strconv.FormatInt(int64(id), 10)])
+	}
+
+	file, _ := json.MarshalIndent(savedJobs, "", "  ")
+	w.Write(file)
+}
+
+func saveJob(w http.ResponseWriter, req *http.Request) {
+	userName := req.FormValue("username")
+	jobId, _ := strconv.Atoi(req.FormValue("jobid"))
+
+	jsonFile, err := os.Open("resources/users.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+	var users Users
+	json.Unmarshal(byteValue, &users)
+
+	user := users[userName]
+	user.Saved = append(users[userName].Saved, jobId)
+	users[userName] = user
+
+	file, _ := json.MarshalIndent(users, "", "  ")
+	_ = ioutil.WriteFile("resources/users.json", file, 0644)
+
+	w.Write([]byte("Successfuly marked the job as saved"))
 }
 
 func generateResume(w http.ResponseWriter, req *http.Request) {
@@ -67,16 +209,7 @@ func homePage(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte("welcome!"))
 }
 
-func (jobs Jobs) parseGithub(jobData []s.Job) []string {
-	jsonFile, err := os.Open("../resources/githubJobs.json")
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer jsonFile.Close()
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-
-	github := []s.Job{}
-	json.Unmarshal(byteValue, &github)
+func (jobs Jobs) parseGithub(github []s.Job) []string {
 
 	companies := []string{}
 
@@ -87,6 +220,7 @@ func (jobs Jobs) parseGithub(jobData []s.Job) []string {
 
 		job.Company = s.Company
 		job.Position = s.JobRole
+		job.Visa = true
 
 		if s.Status == "Closed" {
 			job.Open = false
@@ -103,25 +237,43 @@ func (jobs Jobs) parseGithub(jobData []s.Job) []string {
 	return companies
 }
 
+func (jobs Jobs) getLeetcode() {
+	for key, element := range jobs {
+		csvFile, err := os.Open("resources/leetcode/" + element.Company + ".csv")
+
+		if err != nil {
+			fmt.Println(err)
+		}
+		defer csvFile.Close()
+
+		fileReader := csv.NewReader(csvFile)
+		records, err := fileReader.ReadAll()
+
+		leetCode := [][2]string{}
+
+		if len(records) > 0 {
+			for i := 1; i < len(records); i++ {
+				entry := [2]string{records[i][0], records[i][1]}
+				leetCode = append(leetCode, entry)
+			}
+		}
+
+		element.LeetCode = leetCode
+
+		jobs[key] = element
+	}
+}
+
 func setUp() {
 
-	var jobs Jobs
-
+	jobs := Jobs{}
 	jobData := s.ScrapeGithub()
-
 	companies := jobs.parseGithub(jobData)
+	fmt.Println(len(companies))
 
-	//s.Levels(companies)
-
-	//jsonFile, err = os.Open("resources/levels.json")
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
-	//defer jsonFile.Close()
-	//byteValue, _ = ioutil.ReadAll(jsonFile)
-	//var levels Levels
-	//json.Unmarshal(byteValue, &levels)
-
+	jobs.getLeetcode()
+	file, _ := json.MarshalIndent(jobs, "", "  ")
+	_ = ioutil.WriteFile("resources/jobs.json", file, 0644)
 }
 
 func main() {
@@ -133,6 +285,9 @@ func main() {
 	http.HandleFunc("/apply", apply)
 	http.HandleFunc("/generateresume", generateResume)
 	http.HandleFunc("/homepage", homePage)
+	http.HandleFunc("/getsaved", getSaved)
+	http.HandleFunc("/getapplied", getApplied)
+	http.HandleFunc("/savejob", saveJob)
 
 	fmt.Println("Up and running")
 	log.Fatal(http.ListenAndServe(":8080", nil))

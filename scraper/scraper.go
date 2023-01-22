@@ -62,7 +62,7 @@ func ScrapeGithub() []Job {
 		fmt.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
 	})
 
-	_ = c.Visit("https://github.com/bsovs/Fall2023-Internships/blob/main/Fall2022/README.md")
+	_ = c.Visit("https://github.com/bsovs/Fall2023-Internships/blob/main/README.md")
 
 	return jobData
 
