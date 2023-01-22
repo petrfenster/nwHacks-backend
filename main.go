@@ -1,9 +1,9 @@
 package main
 
 import (
-	scraper "scraping/githubScraping.go"
+	s "nwHacks-backend/scraper"
 )
 
 func main() {
-	scraper.scrapeGithub()
+	s.ScrapeGithub()
 }

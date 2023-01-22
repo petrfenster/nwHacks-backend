@@ -1,4 +1,4 @@
-package main
+package scraper
 
 import (
 	"encoding/json"
@@ -18,7 +18,7 @@ type Job struct {
 	Status   string `json:"status"`
 }
 
-func scrapeGithub() {
+func ScrapeGithub() {
 
 	c := colly.NewCollector()
 

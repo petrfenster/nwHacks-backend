@@ -1,4 +1,4 @@
-module example.com/rhino-scraper
+module nwHacks-backend
 
 go 1.20
 
