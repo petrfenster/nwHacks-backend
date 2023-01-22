@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 )
@@ -22,11 +24,17 @@ type UserData struct {
 	Applied  []int  `json:"applied"`
 }
 
+type GitHubJob struct {
+}
+
+type Levels struct {
+}
+
 type Users map[string]UserData
 
 func fetch(w http.ResponseWriter, req *http.Request) {
 
-	jsonFile, err := os.Open("jobs.json")
+	jsonFile, err := os.Open("resources/jobs.json")
 
 	if err != nil {
 		fmt.Println(err)
@@ -56,10 +64,47 @@ func generateResume(w http.ResponseWriter, req *http.Request) {
 
 }
 
+func homePage(w http.ResponseWriter, req *http.Request) {
+	w.Write([]byte("welcome!"))
+}
+
+func setUp() {
+
+	// scrap functions
+
+	jsonFile, err := os.Open("resources/githubjobs.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+	var gitHubJob GitHubJob
+	json.Unmarshal(byteValue, &gitHubJob)
+
+	jsonFile, err = os.Open("resources/levels.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
+	byteValue, _ = ioutil.ReadAll(jsonFile)
+	var levels Levels
+	json.Unmarshal(byteValue, &levels)
+
+	jobs := map[string]Job{}
+
+}
+
 func main() {
+	setUp()
+
 	http.HandleFunc("/fetch", fetch)
 	http.HandleFunc("/adduser", addUser)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/apply", apply)
 	http.HandleFunc("/generateresume", generateResume)
+	http.HandleFunc("/homepage", homePage)
+
+	fmt.Println("Up and running")
+	log.Fatal(http.ListenAndServe(":8080", nil))
+
 }
