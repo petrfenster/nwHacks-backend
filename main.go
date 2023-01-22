@@ -236,7 +236,7 @@ func resumeHandling(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 
-	//link := req.FormValue("link")
+	link := req.FormValue("link")
 	req.ParseMultipartForm(32 << 20)
 	file, _, err := req.FormFile("resume")
 	if err != nil {
@@ -255,9 +255,7 @@ func resumeHandling(w http.ResponseWriter, req *http.Request) {
 
 	w.Write([]byte("File has been successfully uploaded"))
 
-	//skills := s.SkillsScraper(link)
-
-	skills := []string{"python", "C++", "Java"}
+	skills := s.ScrapeJobDescription(link)
 	skillsField := "Technical skills: "
 	standardPlaceHolder := "Technical skills: <INSERT SKILLS>"
 
