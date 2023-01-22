@@ -84,35 +84,25 @@ func ScrapeGithub() {
 }
 
 func ScrapeLevels(companies []string) {
+	// Initialize a new collector
 	c := colly.NewCollector()
 
-	c.WithTransport(&http.Transport{
-		DialContext: (&net.Dialer{
-			Timeout:   90 * time.Second,
-			KeepAlive: 60 * time.Second,
-			DualStack: true,
-		}).DialContext,
-		MaxIdleConns:          100,
-		IdleConnTimeout:       90 * time.Second,
-		TLSHandshakeTimeout:   10 * time.Second,
-		ExpectContinueTimeout: 1 * time.Second,
-	})
+	// Set the callback function
+	c.OnHTML("title", func(e *colly.HTMLElement) {
+		completeText := e.Text
 
-	var levelsData []LevelsJobStructure
+		splitText := strings.Split(completeText, " ")
 
-	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Scraping:", r.URL)
-	})
+		companyName := splitText[0]
 
-	c.OnResponse(func(r *colly.Response) {
-		fmt.Println("Status:", r.StatusCode)
-	})
-	c.OnHTML("table > tbody", func(h *colly.HTMLElement) {
+		length := len(splitText) - 5
 
-	})
+		//Amazon Software Engineer Intern Salaries | $69.70 / hr | Levels.fyi
+		pay := splitText[length]
 
-	c.OnError(func(r *colly.Response, err error) {
-		fmt.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
+		fmt.Println(companyName)
+		fmt.Println(pay)
+
 	})
 
 	for index := range companies {
@@ -122,12 +112,8 @@ func ScrapeLevels(companies []string) {
 
 	}
 
-	content, err := json.Marshal(levelsData)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	os.Chdir("resources")
-	os.WriteFile("levelsData.json", content, 0644)
-	fmt.Println("Total entries: ", len(levelsData))
+	c.OnError(func(r *colly.Response, err error) {
+		fmt.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
+	})
 
 }

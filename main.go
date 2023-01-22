@@ -84,6 +84,8 @@ func setUp() {
 		companies = append(companies, s.Company)
 	}
 
+	s.ScrapeLevels(companies)
+
 	fmt.Println(companies)
 
 	//jsonFile, err = os.Open("resources/levels.json")
