@@ -73,25 +73,35 @@ func setUp() {
 
 	// scrap functions
 
-	jsonFile, err := os.Open("resources/githubjobs.json")
+	s.ScrapeGithub()
+
+	os.Chdir("..")
+	os.Chdir("resources")
+
+	jsonFile, err := os.Open("githubJobs.json")
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer jsonFile.Close()
 	byteValue, _ := ioutil.ReadAll(jsonFile)
-	var gitHubJob GitHubJob
-	json.Unmarshal(byteValue, &gitHubJob)
 
-	jsonFile, err = os.Open("resources/levels.json")
-	if err != nil {
-		fmt.Println(err)
+	github := []s.Job{}
+	json.Unmarshal(byteValue, &github)
+
+	jobs := []string{}
+
+	for _, s := range github {
+		jobs = append(jobs, s.Company)
 	}
-	defer jsonFile.Close()
-	byteValue, _ = ioutil.ReadAll(jsonFile)
-	var levels Levels
-	json.Unmarshal(byteValue, &levels)
 
-	//	jobs := map[string]Job{}
+	//jsonFile, err = os.Open("resources/levels.json")
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//defer jsonFile.Close()
+	//byteValue, _ = ioutil.ReadAll(jsonFile)
+	//var levels Levels
+	//json.Unmarshal(byteValue, &levels)
 
 }
 
