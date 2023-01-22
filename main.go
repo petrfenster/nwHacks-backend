@@ -35,7 +35,8 @@ type Users map[string]UserData
 
 func fetch(w http.ResponseWriter, req *http.Request) {
 
-	jsonFile, err := os.Open("resources/jobs.json")
+	os.Chdir("resources")
+	jsonFile, err := os.Open("jobs.json")
 
 	if err != nil {
 		fmt.Println(err)
@@ -88,10 +89,10 @@ func setUp() {
 	github := []s.Job{}
 	json.Unmarshal(byteValue, &github)
 
-	jobs := []string{}
+	companies := []string{}
 
 	for _, s := range github {
-		jobs = append(jobs, s.Company)
+		companies = append(companies, s.Company)
 	}
 
 	//jsonFile, err = os.Open("resources/levels.json")
