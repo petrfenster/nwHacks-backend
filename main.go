@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -35,6 +36,10 @@ type Jobs map[string]Job
 type Users map[string]UserData
 
 func fetch(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
 	jsonFile, err := os.Open("resources/jobs.json")
 	if err != nil {
 		fmt.Println(err)
@@ -45,6 +50,10 @@ func fetch(w http.ResponseWriter, req *http.Request) {
 }
 
 func addUser(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
 	userName := req.FormValue("username")
 	password := req.FormValue("password")
 	name := req.FormValue("name")
@@ -72,6 +81,10 @@ func addUser(w http.ResponseWriter, req *http.Request) {
 }
 
 func login(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
 	userName := req.FormValue("username")
 	password := req.FormValue("password")
 
@@ -92,6 +105,10 @@ func login(w http.ResponseWriter, req *http.Request) {
 }
 
 func apply(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
 	userName := req.FormValue("username")
 	jobId, _ := strconv.Atoi(req.FormValue("jobid"))
 
@@ -115,6 +132,10 @@ func apply(w http.ResponseWriter, req *http.Request) {
 }
 
 func getApplied(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
 	userName := req.FormValue("username")
 
 	jsonFile, err := os.Open("resources/users.json")
@@ -147,6 +168,10 @@ func getApplied(w http.ResponseWriter, req *http.Request) {
 }
 
 func getSaved(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
 	userName := req.FormValue("username")
 
 	jsonFile, err := os.Open("resources/users.json")
@@ -179,6 +204,10 @@ func getSaved(w http.ResponseWriter, req *http.Request) {
 }
 
 func saveJob(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
 	userName := req.FormValue("username")
 	jobId, _ := strconv.Atoi(req.FormValue("jobid"))
 
@@ -199,6 +228,29 @@ func saveJob(w http.ResponseWriter, req *http.Request) {
 	_ = ioutil.WriteFile("resources/users.json", file, 0644)
 
 	w.Write([]byte("Successfuly marked the job as saved"))
+}
+
+func uploadResume(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+
+	req.ParseMultipartForm(32 << 20)
+	file, handler, err := req.FormFile("uploadfile")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer file.Close()
+	fmt.Fprintf(w, "%v", handler.Header)
+	f, err := os.OpenFile("./test/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer f.Close()
+	io.Copy(f, file)
+
 }
 
 func generateResume(w http.ResponseWriter, req *http.Request) {
@@ -288,6 +340,7 @@ func main() {
 	http.HandleFunc("/getsaved", getSaved)
 	http.HandleFunc("/getapplied", getApplied)
 	http.HandleFunc("/savejob", saveJob)
+	http.HandleFunc("/uploadresume", uploadResume)
 
 	fmt.Println("Up and running")
 	log.Fatal(http.ListenAndServe(":8080", nil))

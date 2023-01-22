@@ -19,7 +19,11 @@
     "AWS",
     "GCP",
     "Azure",
-    "Oracle"
+    "Oracle",
+    "Microsoft",
+    "HTML",
+    ".Net",
+    "Microsoft"
   ],
   "Soft": [
     "Leader",
