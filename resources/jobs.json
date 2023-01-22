@@ -1,42 +1,224 @@
 {
+  "0": {
+    "Company": "Hubspot",
+    "Position": "Back End Position",
+    "Location": "Remote",
+    "Salary": 0,
+    "Link": "https://www.hubspot.com/careers/jobs/3643175?hubs_signup-cta=careers-apply",
+    "Visa": true,
+    "Open": true,
+    "LeetCode": []
+  },
   "1": {
-    "company" : "Tesla",
-    "position": "Backend Position",
-    "location": "Palo Alto, California",
-    "salary": 50,
-    "link": "https://www.tesla.com/careers/search/job/vehicle-firmware-embedded-systems-engineering-internship-fall-2023-168106?",
-    "visa": "Yes",
-    "open": "true",
-    "category": "fall_2023"
+    "Company": "Tesla",
+    "Position": "Back End Position",
+    "Location": "In-Person",
+    "Salary": 0,
+    "Link": "https://www.tesla.com/careers/search/job/vehicle-firmware-embedded-systems-engineering-internship-fall-2023-168106?",
+    "Visa": true,
+    "Open": true,
+    "LeetCode": [
+      [
+        "https://leetcode.com/problems/minimum-changes-to-make-alternating-binary-string/",
+        "Minimum Changes To Make Alternating Binary String"
+      ],
+      [
+        "https://leetcode.com/problems/find-winner-on-a-tic-tac-toe-game/",
+        "Find Winner on a Tic Tac Toe Game"
+      ],
+      [
+        "https://leetcode.com/problems/largest-perimeter-triangle/",
+        "Largest Perimeter Triangle"
+      ],
+      [
+        "https://leetcode.com/problems/spiral-matrix-iii/",
+        "Spiral Matrix III"
+      ],
+      [
+        "https://leetcode.com/problems/basic-calculator-ii/",
+        "Basic Calculator II"
+      ],
+      [
+        "https://leetcode.com/problems/jump-game-ii/",
+        "Jump Game II"
+      ],
+      [
+        "https://leetcode.com/problems/trapping-rain-water/",
+        "Trapping Rain Water"
+      ],
+      [
+        "https://leetcode.com/problems/generate-parentheses/",
+        "Generate Parentheses"
+      ],
+      [
+        "https://leetcode.com/problems/3sum/",
+        "3Sum"
+      ]
+    ]
   },
   "2": {
-    "company" : "Hubspot",
-    "position": "Backend Position",
-    "location": "Remote",
-    "salary": 55,
-    "link": "https://www.hubspot.com/careers/jobs/3643175?hubs_signup-cta=careers-apply",
-    "visa": "Yes",
-    "open": "true",
-    "category": "fall_2023"
+    "Company": "General Electric",
+    "Position": "Systems Engineering Intern",
+    "Location": "Multiple",
+    "Salary": 0,
+    "Link": "https://jobs.gecareers.com/aviation/global/en/job/GE11GLOBALR3630709EXTERNALENGLOBAL/GE-Aviation-Systems-Engineering-Co-op-Fall-2023",
+    "Visa": true,
+    "Open": true,
+    "LeetCode": []
   },
   "3": {
-    "company" : "Hubspot",
-    "position": "Backend Position",
-    "location": "Remote",
-    "salary": 55,
-    "link": "https://www.hubspot.com/careers/jobs/3643175?hubs_signup-cta=careers-apply",
-    "visa": "Yes",
-    "open": "true",
-    "category": "fall_2023"
+    "Company": "Johnson \u0026 Johnson",
+    "Position": "Technology Co-op (Many Positions) (Jun-Dec 2023)",
+    "Location": "Multiple Locations or Remote",
+    "Salary": 0,
+    "Link": "https://jnjc.taleo.net/careersection/4/jobdetail.ftl?job=2206082625W\u0026lang=en",
+    "Visa": true,
+    "Open": true,
+    "LeetCode": []
   },
   "4": {
-    "company" : "Hubspot",
-    "position": "Backend Position",
-    "location": "Remote",
-    "salary": 55,
-    "link": "https://www.hubspot.com/careers/jobs/3643175?hubs_signup-cta=careers-apply",
-    "visa": "Yes",
-    "open": "true",
-    "category": "fall_2023"
+    "Company": "BMW",
+    "Position": "Full Stack Developer Intern",
+    "Location": "Spartanburg, SC",
+    "Salary": 0,
+    "Link": "https://www.bmwgroup.jobs/us/en/jobfinder/job-description.2300001K.html",
+    "Visa": true,
+    "Open": true,
+    "LeetCode": []
+  },
+  "5": {
+    "Company": "Nvidia",
+    "Position": "Silicon Validation Engineering Intern - Fall 2023",
+    "Location": "Santa Clara, CA",
+    "Salary": 0,
+    "Link": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite/job/US-CA-Santa-Clara/Silicon-Validation-Engineering-Intern---Fall-2023_JR1963068-1",
+    "Visa": true,
+    "Open": true,
+    "LeetCode": [
+      [
+        "https://leetcode.com/problems/last-stone-weight/",
+        "Last Stone Weight"
+      ],
+      [
+        "https://leetcode.com/problems/degree-of-an-array/",
+        "Degree of an Array"
+      ],
+      [
+        "https://leetcode.com/problems/k-empty-slots/",
+        "K Empty Slots"
+      ],
+      [
+        "https://leetcode.com/problems/design-circular-queue/",
+        "Design Circular Queue"
+      ],
+      [
+        "https://leetcode.com/problems/subarray-sum-equals-k/",
+        "Subarray Sum Equals K"
+      ],
+      [
+        "https://leetcode.com/problems/single-element-in-a-sorted-array/",
+        "Single Element in a Sorted Array"
+      ],
+      [
+        "https://leetcode.com/problems/lonely-pixel-i/",
+        "Lonely Pixel I"
+      ],
+      [
+        "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
+        "Serialize and Deserialize Binary Tree"
+      ],
+      [
+        "https://leetcode.com/problems/missing-number/",
+        "Missing Number"
+      ],
+      [
+        "https://leetcode.com/problems/add-and-search-word-data-structure-design/",
+        "Add and Search Word - Data structure design"
+      ],
+      [
+        "https://leetcode.com/problems/reverse-linked-list/",
+        "Reverse Linked List"
+      ],
+      [
+        "https://leetcode.com/problems/number-of-islands/",
+        "Number of Islands"
+      ],
+      [
+        "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/",
+        "Best Time to Buy and Sell Stock IV"
+      ],
+      [
+        "https://leetcode.com/problems/intersection-of-two-linked-lists/",
+        "Intersection of Two Linked Lists"
+      ],
+      [
+        "https://leetcode.com/problems/lru-cache/",
+        "LRU Cache"
+      ],
+      [
+        "https://leetcode.com/problems/sort-colors/",
+        "Sort Colors"
+      ],
+      [
+        "https://leetcode.com/problems/search-a-2d-matrix/",
+        "Search a 2D Matrix"
+      ],
+      [
+        "https://leetcode.com/problems/merge-intervals/",
+        "Merge Intervals"
+      ],
+      [
+        "https://leetcode.com/problems/valid-sudoku/",
+        "Valid Sudoku"
+      ],
+      [
+        "https://leetcode.com/problems/search-in-rotated-sorted-array/",
+        "Search in Rotated Sorted Array"
+      ],
+      [
+        "https://leetcode.com/problems/regular-expression-matching/",
+        "Regular Expression Matching"
+      ]
+    ]
+  },
+  "6": {
+    "Company": "Danbury Mission Technologies",
+    "Position": "Embedded Software Engineering Co-Op",
+    "Location": "Danbury, CT",
+    "Salary": 0,
+    "Link": "https://recruiting.ultipro.com/DAN1006DMT/JobBoard/0a1c026e-04e8-4606-8220-15f06f331421/OpportunityDetail?opportunityId=da3c15f6-13e5-40e2-9dfa-728fe842c775",
+    "Visa": true,
+    "Open": true,
+    "LeetCode": []
+  },
+  "7": {
+    "Company": "Midmark",
+    "Position": "IT Co-Op Software Development",
+    "Location": "Versailles, OH or Remote",
+    "Salary": 0,
+    "Link": "https://hcor.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/job/2154?utm_medium=jobshare",
+    "Visa": true,
+    "Open": true,
+    "LeetCode": []
+  },
+  "8": {
+    "Company": "PCAOB",
+    "Position": "Technology Intern (Hybrid)",
+    "Location": "Ashburn, VA or Washington, DC",
+    "Salary": 0,
+    "Link": "https://pcaobus.wd1.myworkdayjobs.com/PCAOB/job/Ashburn-VA/Fall-2023-Technology-Intern_R596",
+    "Visa": true,
+    "Open": true,
+    "LeetCode": []
+  },
+  "9": {
+    "Company": "Waystar",
+    "Position": "Application Engineer Co-Op",
+    "Location": "Atlanta, GA",
+    "Salary": 0,
+    "Link": "https://waystar.wd1.myworkdayjobs.com/Waystar/job/Atlanta/Application-Engineer-Co-Op---Summer-or-Fall-of-2023_R735",
+    "Visa": true,
+    "Open": true,
+    "LeetCode": []
   }
 }

@@ -1,7 +1,16 @@
 {
-  "alec": {
-    "name": "Alec",
-    "password": "jones",
-    "applied": [4, 5, 6, 1, 2]
+  "petr": {
+    "name": "Petr",
+    "password": "fenster",
+    "applied": [
+      5,
+      9
+    ],
+    "saved": [
+      3,
+      6,
+      2,
+      8
+    ]
   }
 }
