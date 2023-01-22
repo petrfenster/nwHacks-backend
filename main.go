@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	s "nwHacks-backend/scraper"
 	"os"
 )
 
@@ -96,6 +97,8 @@ func setUp() {
 
 func main() {
 	setUp()
+
+	s.ScrapeGithub()
 
 	http.HandleFunc("/fetch", fetch)
 	http.HandleFunc("/adduser", addUser)
