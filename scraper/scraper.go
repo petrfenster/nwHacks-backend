@@ -2,6 +2,7 @@ package scraper
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"strings"
@@ -116,4 +117,38 @@ func ScrapeLevels(companies []string) LevelsJobStructure {
 	})
 
 	return levelsData
+}
+
+func ScrapeJobDescription(url string) []string {
+	var skillsFound []string
+
+	skills := map[string]int{"Python": 1, "C++": 2, "C#": 1, "Java": 2, "JavaScript": 1, "React": 2, "Node": 1,
+		"GO": 2, "Docker": 1, "Linux": 2, "Perl": 1, "PHP": 2, "Kubernetes": 1, "Git": 2, "Mean": 1, "Ruby": 2, "AWS": 1, "GCP": 2, "Azure": 1, "Oracle": 2,
+		"Microsoft": 1, "HTML": 2, ".Net": 1}
+
+	urlToScrape := url
+	fmt.Printf("HTML code of %s ...\n", url)
+	resp, err := http.Get(urlToScrape)
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer resp.Body.Close()
+
+	html, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	htmlText := fmt.Sprintf("sprintf: %s\n", html)
+
+	for key := range skills {
+		if strings.Contains(htmlText, key) {
+			skillsFound = append(skillsFound, key)
+		}
+	}
+	fmt.Println("skills found on page :")
+	fmt.Println(skillsFound)
+	return skillsFound
 }
