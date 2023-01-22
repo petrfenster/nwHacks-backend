@@ -25,12 +25,6 @@ type UserData struct {
 	Applied  []int  `json:"applied"`
 }
 
-type GitHubJob struct {
-}
-
-type Levels struct {
-}
-
 type Users map[string]UserData
 
 func fetch(w http.ResponseWriter, req *http.Request) {
@@ -72,8 +66,6 @@ func homePage(w http.ResponseWriter, req *http.Request) {
 
 func setUp() {
 
-	// scrap functions
-
 	s.ScrapeGithub()
 
 	jsonFile, err := os.Open("../resources/githubJobs.json")
@@ -83,7 +75,7 @@ func setUp() {
 	defer jsonFile.Close()
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 
-	github := []s.Job{}
+	github := []s.GithubJobStructure{}
 	json.Unmarshal(byteValue, &github)
 
 	companies := []string{}

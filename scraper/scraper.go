@@ -3,14 +3,15 @@ package scraper
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gocolly/colly"
 	"net"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/gocolly/colly"
 )
 
-type Job struct {
+type GithubJobStructure struct {
 	Company  string `json:"companyName"`
 	JobRole  string `json:"jobRole"`
 	Location string `json:"location"`
@@ -34,7 +35,7 @@ func ScrapeGithub() {
 		ExpectContinueTimeout: 1 * time.Second,
 	})
 
-	var jobData []Job
+	var jobData []GithubJobStructure
 
 	c.OnRequest(func(r *colly.Request) {
 		fmt.Println("Scraping:", r.URL)
@@ -49,7 +50,7 @@ func ScrapeGithub() {
 			el.ForEach("a", func(_ int, el *colly.HTMLElement) {
 				link = el.Attr("href")
 			})
-			tableData := Job{
+			tableData := GithubJobStructure{
 				Company:  el.ChildText("td:nth-child(1)"),
 				Location: el.ChildText("td:nth-child(2)"),
 				Status:   el.ChildText("td:nth-child(3)"),
