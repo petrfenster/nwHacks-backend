@@ -70,7 +70,6 @@ func ScrapeGithub() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	os.Chdir("..")
 	os.Chdir("resources")
 	os.WriteFile("githubJobs.json", content, 0644)
 	fmt.Println("Total jobs: ", len(jobData))
