@@ -18,10 +18,7 @@ type GithubJobStructure struct {
 	Status   string `json:"status"`
 }
 
-type LevelsJobStructure struct {
-	Company string `json:"companyName"`
-	Pay     string `json:"pay"`
-}
+type LevelsJobStructure map[string]string
 
 func ScrapeGithub() []GithubJobStructure {
 
@@ -74,9 +71,9 @@ func ScrapeGithub() []GithubJobStructure {
 	return jobData
 }
 
-func ScrapeLevels(companies []string) []LevelsJobStructure {
+func ScrapeLevels(companies []string) LevelsJobStructure {
 
-	var levelsData []LevelsJobStructure
+	levelsData := LevelsJobStructure{}
 	// Initialize a new collector
 	c := colly.NewCollector()
 
@@ -104,12 +101,7 @@ func ScrapeLevels(companies []string) []LevelsJobStructure {
 
 		//Amazon Software Engineer Intern Salaries | $69.70 / hr | Levels.fyi
 		pay := splitText[length]
-		tempJob := LevelsJobStructure{
-			Company: companyName,
-			Pay:     pay,
-		}
-		levelsData = append(levelsData, tempJob)
-
+		levelsData[companyName] = pay
 	})
 
 	for index := range companies {

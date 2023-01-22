@@ -16,7 +16,7 @@ type Job struct {
 	Company  string      `json: "company"`
 	Position string      `json: "position"`
 	Location string      `json: "location"`
-	Salary   int         `json: "salary"`
+	Salary   float64     `json: "salary"`
 	Link     string      `json: "link"`
 	Visa     bool        `json: "visa"`
 	Open     bool        `json: "open"`
@@ -262,7 +262,7 @@ func homePage(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte("welcome!"))
 }
 
-func (jobs Jobs) parseGithub(github []s.Job) []string {
+func (jobs Jobs) parseGithub(github []s.GithubJobStructure) []string {
 
 	companies := []string{}
 
@@ -317,12 +317,29 @@ func (jobs Jobs) getLeetcode() {
 	}
 }
 
+func (jobs Jobs) parseLevels(companies []string) {
+	levelsData := s.ScrapeLevels(companies)
+
+	for key, element := range jobs {
+		val, ok := levelsData[element.Company]
+
+		if ok {
+			chars := []rune(val)
+			chars = chars[1:]
+			fmt.Println(string(chars))
+			element.Salary, _ = strconv.ParseFloat(string(chars), 64)
+			jobs[key] = element
+		}
+	}
+}
+
 func setUp() {
 
 	jobs := Jobs{}
 	jobData := s.ScrapeGithub()
 	companies := jobs.parseGithub(jobData)
-	fmt.Println(len(companies))
+
+	jobs.parseLevels(companies)
 
 	jobs.getLeetcode()
 	file, _ := json.MarshalIndent(jobs, "", "  ")
