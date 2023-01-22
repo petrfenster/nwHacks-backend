@@ -1,11 +1,9 @@
 package scraper
 
 import (
-	"encoding/json"
 	"fmt"
 	"net"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
@@ -25,7 +23,7 @@ type LevelsJobStructure struct {
 	Pay     string `json:"pay"`
 }
 
-func ScrapeGithub() {
+func ScrapeGithub() []GithubJobStructure {
 
 	c := colly.NewCollector()
 
@@ -73,19 +71,26 @@ func ScrapeGithub() {
 
 	_ = c.Visit("https://github.com/bsovs/Fall2023-Internships/blob/main/README.md")
 
-	content, err := json.Marshal(jobData)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	os.Chdir("resources")
-	os.WriteFile("githubJobs.json", content, 0644)
-	fmt.Println("Total jobs: ", len(jobData))
-
+	return jobData
 }
 
-func ScrapeLevels(companies []string) {
+func ScrapeLevels(companies []string) []LevelsJobStructure {
+
+	var levelsData []LevelsJobStructure
 	// Initialize a new collector
 	c := colly.NewCollector()
+
+	c.WithTransport(&http.Transport{
+		DialContext: (&net.Dialer{
+			Timeout:   90 * time.Second,
+			KeepAlive: 60 * time.Second,
+			DualStack: true,
+		}).DialContext,
+		MaxIdleConns:          100,
+		IdleConnTimeout:       90 * time.Second,
+		TLSHandshakeTimeout:   10 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+	})
 
 	// Set the callback function
 	c.OnHTML("title", func(e *colly.HTMLElement) {
@@ -99,9 +104,11 @@ func ScrapeLevels(companies []string) {
 
 		//Amazon Software Engineer Intern Salaries | $69.70 / hr | Levels.fyi
 		pay := splitText[length]
-
-		fmt.Println(companyName)
-		fmt.Println(pay)
+		tempJob := LevelsJobStructure{
+			Company: companyName,
+			Pay:     pay,
+		}
+		levelsData = append(levelsData, tempJob)
 
 	})
 
@@ -116,4 +123,5 @@ func ScrapeLevels(companies []string) {
 		fmt.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
 	})
 
+	return levelsData
 }
