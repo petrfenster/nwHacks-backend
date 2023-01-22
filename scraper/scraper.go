@@ -119,12 +119,15 @@ func ScrapeLevels(companies []string) LevelsJobStructure {
 	return levelsData
 }
 
-func ScrapeJobDescription(url string) []string {
-	var skillsFound []string
+func ScrapeJobDescription(url string) ([]string, []string) {
+	var technicalSkillsFound []string
+	var softSkillsFound []string
 
-	skills := map[string]int{"Python": 1, "C++": 2, "C#": 1, "Java": 2, "JavaScript": 1, "React": 2, "Node": 1,
+	technicalSkills := map[string]int{"Python": 1, "C++": 2, "C#": 1, "Java": 2, "JavaScript": 1, "React": 2, "Node": 1,
 		"GO": 2, "Docker": 1, "Linux": 2, "Perl": 1, "PHP": 2, "Kubernetes": 1, "Git": 2, "Mean": 1, "Ruby": 2, "AWS": 1, "GCP": 2, "Azure": 1, "Oracle": 2,
-		"Microsoft": 1, "HTML": 2, ".Net": 1, "Leader": 2, "presentation": 1, "Management": 2, "Communication": 1, "Leadership": 2,
+		"Microsoft": 1, "HTML": 2, ".Net": 1, "Leader": 2}
+
+	softSkills := map[string]int{"presentation": 1, "Management": 2, "Communication": 1, "Leadership": 2,
 		"Teamwork": 1, "Problem solving": 2, "Time management": 1, "Project management": 2, "work ethic": 1, "Adaptability": 2, "Flexibility": 1}
 
 	urlToScrape := url
@@ -144,12 +147,18 @@ func ScrapeJobDescription(url string) []string {
 
 	htmlText := fmt.Sprintf("sprintf: %s\n", html)
 
-	for key := range skills {
+	for key := range technicalSkills {
 		if strings.Contains(htmlText, key) {
-			skillsFound = append(skillsFound, key)
+			technicalSkillsFound = append(technicalSkillsFound, key)
 		}
 	}
-	fmt.Println("skills found on page :")
-	fmt.Println(skillsFound)
-	return skillsFound
+
+	for key := range softSkills {
+		if strings.Contains(htmlText, key) {
+			softSkillsFound = append(softSkillsFound, key)
+		}
+	}
+	fmt.Println("technical skills found on page :")
+	fmt.Println(technicalSkillsFound)
+	return technicalSkillsFound, softSkillsFound
 }
