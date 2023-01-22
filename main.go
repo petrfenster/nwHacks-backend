@@ -76,10 +76,7 @@ func setUp() {
 
 	s.ScrapeGithub()
 
-	os.Chdir("..")
-	os.Chdir("resources")
-
-	jsonFile, err := os.Open("githubJobs.json")
+	jsonFile, err := os.Open("../resources/githubJobs.json")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -95,6 +92,8 @@ func setUp() {
 		companies = append(companies, s.Company)
 	}
 
+	fmt.Println(companies)
+
 	//jsonFile, err = os.Open("resources/levels.json")
 	//if err != nil {
 	//	fmt.Println(err)
@@ -108,8 +107,6 @@ func setUp() {
 
 func main() {
 	setUp()
-
-	s.ScrapeGithub()
 
 	http.HandleFunc("/fetch", fetch)
 	http.HandleFunc("/adduser", addUser)
