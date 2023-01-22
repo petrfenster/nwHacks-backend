@@ -124,7 +124,8 @@ func ScrapeJobDescription(url string) []string {
 
 	skills := map[string]int{"Python": 1, "C++": 2, "C#": 1, "Java": 2, "JavaScript": 1, "React": 2, "Node": 1,
 		"GO": 2, "Docker": 1, "Linux": 2, "Perl": 1, "PHP": 2, "Kubernetes": 1, "Git": 2, "Mean": 1, "Ruby": 2, "AWS": 1, "GCP": 2, "Azure": 1, "Oracle": 2,
-		"Microsoft": 1, "HTML": 2, ".Net": 1}
+		"Microsoft": 1, "HTML": 2, ".Net": 1, "Leader": 2, "presentation": 1, "Management": 2, "Communication": 1, "Leadership": 2,
+		"Teamwork": 1, "Problem solving": 2, "Time management": 1, "Project management": 2, "work ethic": 1, "Adaptability": 2, "Flexibility": 1}
 
 	urlToScrape := url
 	fmt.Printf("HTML code of %s ...\n", url)
