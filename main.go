@@ -4,6 +4,8 @@ import (
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"github.com/nguyenthenguyen/docx"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -229,33 +231,56 @@ func saveJob(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte("Successfuly marked the job as saved"))
 }
 
-func uploadResume(w http.ResponseWriter, req *http.Request) {
+func resumeHandling(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 
+	//link := req.FormValue("link")
 	req.ParseMultipartForm(32 << 20)
-	file, handler, err := req.FormFile("uploadfile")
+	file, _, err := req.FormFile("resume")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	defer file.Close()
 
-	f, err := os.OpenFile("./test/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	f, _ := os.OpenFile("resources/resume.docx", os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	defer f.Close()
+	io.Copy(f, file)
 
-	byteValue, _ := ioutil.ReadAll(f)
+	w.Write([]byte("File has been successfully uploaded"))
 
-	fmt.Println(byteValue)
-}
+	//skills := s.SkillsScraper(link)
 
-func generateResume(w http.ResponseWriter, req *http.Request) {
+	skills := []string{"python", "C++", "Java"}
+	skillsField := "Technical skills: "
+	standardPlaceHolder := "Technical skills: <INSERT SKILLS>"
 
+	for _, skill := range skills {
+		skillsField = skillsField + skill + ", "
+	}
+
+	r, err := docx.ReadDocxFile("resources/resume.docx")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	docx1 := r.Editable()
+	docx1.Replace(standardPlaceHolder, skillsField, -1)
+	docx1.WriteToFile("resources/resume-updated.docx")
+
+	w.Header().Set("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+	w.Header().Set("Content-Disposition", "attachment; filename=resume-updated.docx")
+
+	respFile, _ := os.Open("resources/resume-updated.docx")
+	defer respFile.Close()
+
+	io.Copy(w, respFile)
 }
 
 func homePage(w http.ResponseWriter, req *http.Request) {
@@ -326,7 +351,6 @@ func (jobs Jobs) parseLevels(companies []string) {
 		if ok {
 			chars := []rune(val)
 			chars = chars[1:]
-			fmt.Println(string(chars))
 			element.Salary, _ = strconv.ParseFloat(string(chars), 64)
 			jobs[key] = element
 		}
@@ -353,12 +377,11 @@ func main() {
 	http.HandleFunc("/adduser", addUser)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/apply", apply)
-	http.HandleFunc("/generateresume", generateResume)
 	http.HandleFunc("/homepage", homePage)
 	http.HandleFunc("/getsaved", getSaved)
 	http.HandleFunc("/getapplied", getApplied)
 	http.HandleFunc("/savejob", saveJob)
-	http.HandleFunc("/uploadresume", uploadResume)
+	http.HandleFunc("/uploadresume", resumeHandling)
 
 	fmt.Println("Up and running")
 	log.Fatal(http.ListenAndServe(":8080", nil))
