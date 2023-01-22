@@ -1,12 +1,10 @@
 package scraper
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/gocolly/colly"
 	"net"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -18,7 +16,7 @@ type Job struct {
 	Status   string `json:"status"`
 }
 
-func ScrapeGithub() {
+func ScrapeGithub() []Job {
 
 	c := colly.NewCollector()
 
@@ -66,12 +64,6 @@ func ScrapeGithub() {
 
 	_ = c.Visit("https://github.com/bsovs/Fall2023-Internships/blob/main/Fall2022/README.md")
 
-	content, err := json.Marshal(jobData)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	os.Chdir("resources")
-	os.WriteFile("githubJobs.json", content, 0644)
-	fmt.Println("Total jobs: ", len(jobData))
+	return jobData
 
 }

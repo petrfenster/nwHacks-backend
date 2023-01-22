@@ -8,6 +8,7 @@ import (
 	"net/http"
 	s "nwHacks-backend/scraper"
 	"os"
+	"strconv"
 )
 
 type Job struct {
@@ -25,11 +26,7 @@ type UserData struct {
 	Applied  []int  `json:"applied"`
 }
 
-type GitHubJob struct {
-}
-
-type Levels struct {
-}
+type Jobs map[string]Job
 
 type Users map[string]UserData
 
@@ -70,12 +67,7 @@ func homePage(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte("welcome!"))
 }
 
-func setUp() {
-
-	// scrap functions
-
-	s.ScrapeGithub()
-
+func (jobs Jobs) parseGithub(jobData []s.Job) []string {
 	jsonFile, err := os.Open("../resources/githubJobs.json")
 	if err != nil {
 		fmt.Println(err)
@@ -88,11 +80,38 @@ func setUp() {
 
 	companies := []string{}
 
-	for _, s := range github {
+	for i, s := range github {
 		companies = append(companies, s.Company)
+		key := strconv.FormatInt(int64(i), 10)
+		job := Job{}
+
+		job.Company = s.Company
+		job.Position = s.JobRole
+
+		if s.Status == "Closed" {
+			job.Open = false
+		} else {
+			job.Open = true
+		}
+
+		job.Link = s.Link
+		job.Location = s.Location
+
+		jobs[key] = job
 	}
 
-	fmt.Println(companies)
+	return companies
+}
+
+func setUp() {
+
+	var jobs Jobs
+
+	jobData := s.ScrapeGithub()
+
+	companies := jobs.parseGithub(jobData)
+
+	//s.Levels(companies)
 
 	//jsonFile, err = os.Open("resources/levels.json")
 	//if err != nil {
@@ -117,5 +136,4 @@ func main() {
 
 	fmt.Println("Up and running")
 	log.Fatal(http.ListenAndServe(":8080", nil))
-
 }
