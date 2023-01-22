@@ -90,7 +90,7 @@ func setUp() {
 	var levels Levels
 	json.Unmarshal(byteValue, &levels)
 
-	jobs := map[string]Job{}
+	//	jobs := map[string]Job{}
 
 }
 
