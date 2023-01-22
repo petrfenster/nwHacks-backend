@@ -255,11 +255,18 @@ func resumeHandling(w http.ResponseWriter, req *http.Request) {
 
 	w.Write([]byte("File has been successfully uploaded"))
 
-	skills := s.ScrapeJobDescription(link)
+	tech, soft := s.ScrapeJobDescription(link)
 	skillsField := "Technical skills: "
 	standardPlaceHolder := "Technical skills: <INSERT SKILLS>"
 
-	for _, skill := range skills {
+	for _, skill := range tech {
+		skillsField = skillsField + skill + ", "
+	}
+
+	skillsField += "\n"
+	skillsField += "Soft skills: "
+
+	for _, skill := range soft {
 		skillsField = skillsField + skill + ", "
 	}
 
